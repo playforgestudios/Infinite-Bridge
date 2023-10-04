@@ -1,9 +1,7 @@
-using GoogleMobileAds;
 using GoogleMobileAds.Api;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
 public class AdsManager : MonoBehaviour
@@ -49,7 +47,7 @@ public class AdsManager : MonoBehaviour
                         break;
                 }
             }
-            //StartCoroutine(LoadAdsAfterInitialize());
+            StartCoroutine(LoadAdsAfterInitialize());
         });
     }
 
@@ -57,8 +55,8 @@ public class AdsManager : MonoBehaviour
     {
         LoadBannerAd();
         yield return new WaitForSeconds(0.2f);
-        StartCoroutine(LoadRewardedInterstitialAd());
-        //StartCoroutine(LoadRewardedAd());
+        //StartCoroutine(LoadRewardedInterstitialAd());
+        StartCoroutine(LoadRewardedAd());
         StartCoroutine(LoadInterstitialAd());
     }
 
@@ -243,20 +241,25 @@ public class AdsManager : MonoBehaviour
     
     private void RegisterEventHandlers(RewardedAd ad)
     {
-        if (ad == null) { StartCoroutine(LoadRewardedAd()); return; }
+        if (ad == null)
+        {
+            GameManager.Instance.PublishEvent("incentivized_video_failed");
+            StartCoroutine(LoadRewardedAd());
+            return;
+        }
         
         // Raised when the ad closed full screen content.
         ad.OnAdFullScreenContentClosed += () =>
         {
+            GameManager.Instance.PublishEvent("incentivized_video_completed", "omc");
             StartCoroutine(LoadRewardedAd());
             Debug.Log("Rewarded ad full screen content closed.");
         };
         // Raised when the ad failed to open full screen content.
         ad.OnAdFullScreenContentFailed += (AdError error) =>
         {
+            GameManager.Instance.PublishEvent("incentivized_video_failed");
             StartCoroutine(LoadRewardedAd());
-            Debug.LogError("Rewarded ad failed to open full screen content " +
-                           "with error : " + error);
         };
     }
     
@@ -325,12 +328,14 @@ public class AdsManager : MonoBehaviour
         ad.OnAdFullScreenContentClosed += () =>
         {
             // Reload the ad so that we can show another as soon as possible.
+            
             StartCoroutine(LoadRewardedInterstitialAd());
         };
         // Raised when the ad failed to open full screen content.
         ad.OnAdFullScreenContentFailed += (AdError error) =>
         {
             // Reload the ad so that we can show another as soon as possible.
+            
             StartCoroutine(LoadRewardedInterstitialAd());
         };
     }
@@ -339,7 +344,12 @@ public class AdsManager : MonoBehaviour
     {
         if (name == "show_incentivized_ad")
         {
-            ShowRewardedInterstitialAd();
+            ShowRewardedAd();
         }
+    }
+
+    void OnDestroy()
+    {
+        GameManager.OnEvent -= GameManager_OnEvent;
     }
 }

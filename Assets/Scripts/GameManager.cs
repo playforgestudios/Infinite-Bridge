@@ -2,13 +2,13 @@
 
 public class GameManager : BBCommon.Singleton<GameManager>
 {
-    private const string kAppStoreURL = "https://appstor.es/infinity.path";
-    private const string kGooglePlayURL = "https://play.google.com/store/apps/details?id=io.voodoo.paperio&hl=fr";
-    private const string kAppStoreId = "1138102771";
-    private const string kGooglePlayId = "io.voodoo.paperio";
-    private const string kFBAppLink = "fb://page/527358433996753";
-    private const string kFBPageLink = "https://www.facebook.com/voodoogames/";
-    private const string kLeaderboardName = "com.bbayer.leaderboard.infinitypath";
+    private const string kAppStoreURL = "";
+    private const string kGooglePlayURL = "";
+    private const string kAppStoreId = "";
+    private const string kGooglePlayId = "com.PlayForgeStudios.ZigZagRollingBall3D";
+    private const string kFBAppLink = "";
+    private const string kFBPageLink = "https://www.facebook.com/PlayForgeStudios";
+    private const string kLeaderboardName = "";
     private static string kShareText = "OMG!! I have scored {0} in {1}. Can you beat my score?";
 
 
@@ -30,9 +30,14 @@ public class GameManager : BBCommon.Singleton<GameManager>
     public TileManagerCubes tileManager;
     int captureNdx;
 
+    public int maxChancesWithAd = 3;
+    internal int remainingChancesWithAd;
+    
+
     // Use this for initialization
     void Awake()
     {
+        remainingChancesWithAd = maxChancesWithAd;
         //GameObject ply = Instantiate(m_Players[PlayerPrefs.GetInt("SelectedPlayer",0)]);
         //player = ply.GetComponent<PlayerCubes>();
         InitializeUserPrefs();

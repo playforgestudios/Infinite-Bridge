@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,8 +17,14 @@ public class GPGSManager : MonoBehaviour
     string AuthenticationFailureMessage;
 
     [SerializeField] Button SignInBtn;
-    [SerializeField] TextMeshProUGUI WelcomeUserMessage;
+    [SerializeField] internal TextMeshProUGUI WelcomeUserMessage;
     [SerializeField] TextMeshProUGUI StatusText;
+    public static GPGSManager Instance;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     public void Start()
     {

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.SocialPlatforms;
 using GooglePlayGames;
@@ -9,6 +10,11 @@ public class Leaderboard : MonoBehaviour
 {
     [SerializeField] private GameObject rowPrefab;
     [SerializeField] private Transform rowsParent;
+
+    private void Awake()
+    {
+        this.gameObject.SetActive(false);
+    }
 
     private void OnEnable()
     {
@@ -22,7 +28,7 @@ public class Leaderboard : MonoBehaviour
         PlayGamesPlatform.Instance.LoadScores(
             GPGSIds.leaderboard_infinite_bridge,
             LeaderboardStart.TopScores,
-            100,
+            30,
             LeaderboardCollection.Public,
             LeaderboardTimeSpan.AllTime,
         (data) => LoadUsersAndDisplay(data));

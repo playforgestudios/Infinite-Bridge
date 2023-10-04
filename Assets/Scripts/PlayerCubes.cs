@@ -24,9 +24,12 @@ public class PlayerCubes : MonoBehaviour
     public int m_Score;
     public int m_GatheredCoins;
     public Vector3 m_StartPosition;
+    
+    //particles
     public ParticleSystem m_ExplosionParticles;
     public ParticleSystem m_LevelExplosion;
     public ParticleSystem m_BestScoreParticles;
+    
     public string m_PlayerName;
     public bool m_IsRotating;
 
@@ -208,7 +211,6 @@ public class PlayerCubes : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        print("game state : "+ GameManager.Instance.m_GameState);
         if (GameManager.Instance.m_GameState == "run")
         {
             if (Input.GetMouseButtonDown(0) || Input.GetKeyUp(KeyCode.Space))
