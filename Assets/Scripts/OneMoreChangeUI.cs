@@ -55,8 +55,6 @@ public class OneMoreChangeUI : MonoBehaviour
 
             if (value.ToString() == "show_omc")
             {
-                ShowChanceUI();
-                
                 gameObject.SetActive(true);
                 StartTimer();
             }

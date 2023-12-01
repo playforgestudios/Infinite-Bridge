@@ -23,7 +23,8 @@ public class IsApplication : MonoBehaviour {
 			return false;
 		return true;
 		#else
-		return canOpenUrl(app_bundle);
+		//return canOpenUrl(app_bundle);
+		return true;
 		#endif
 
 	}

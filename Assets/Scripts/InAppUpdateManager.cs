@@ -44,18 +44,14 @@
     
             if (appUpdateInfoResult.UpdateAvailability == UpdateAvailability.UpdateAvailable)
             {
-                if (stalenessDays is >= 2 and < 4)
-                {
-                    var appUpdateOptions = AppUpdateOptions.FlexibleAppUpdateOptions();
-                    StartCoroutine(StartFlexibleUpdate(appUpdateInfoResult, appUpdateOptions));
-                }
-                else if (stalenessDays >= 4)
-                {
-                    var appUpdateOptions = AppUpdateOptions.ImmediateAppUpdateOptions();
-                    StartCoroutine(StartImmediateUpdate(appUpdateInfoResult, appUpdateOptions));
-                }
-                
-                
+                    //var appUpdateOptions = AppUpdateOptions.FlexibleAppUpdateOptions();
+                    //StartCoroutine(StartFlexibleUpdate(appUpdateInfoResult, appUpdateOptions));
+
+                    if (stalenessDays > 2)
+                    {
+                        var appUpdateOptions = AppUpdateOptions.ImmediateAppUpdateOptions();
+                        StartCoroutine(StartImmediateUpdate(appUpdateInfoResult, appUpdateOptions));
+                    }
             }
             else
             {

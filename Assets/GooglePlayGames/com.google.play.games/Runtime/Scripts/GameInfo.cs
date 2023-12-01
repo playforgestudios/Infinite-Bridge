@@ -36,10 +36,10 @@ namespace GooglePlayGames {
         private const string UnescapedWebClientId = "WEB_CLIENTID";
         private const string UnescapedNearbyServiceId = "NEARBY_SERVICE_ID";
 
-        public const string ApplicationId = "640229239867"; // Filled in automatically
+        public const string ApplicationId = "1090971097000"; // Filled in automatically
         public const string IosClientId = "__IOS_CLIENTID__"; // Filled in automatically
-        public const string WebClientId = "640229239867-sk9b1mvsjo64ric62mo07qd7lm5e8p61.apps.googleusercontent.com"; // Filled in automatically
-        public const string NearbyConnectionServiceId = "com.PlayForgeStudios.InfiniteBridge";
+        public const string WebClientId = "1090971097000-tiua1oomlgf744qksbrrvi4e1lpib9s3.apps.googleusercontent.com"; // Filled in automatically
+        public const string NearbyConnectionServiceId = "com.PlayForgeStudios.EndlessRollingBall";
 
         public static bool ApplicationIdInitialized() {
             return !string.IsNullOrEmpty(ApplicationId) && !ApplicationId.Equals(ToEscapedToken(UnescapedApplicationId));

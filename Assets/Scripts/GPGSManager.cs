@@ -1,11 +1,8 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using GooglePlayGames;
 using GooglePlayGames.BasicApi;
-using UnityEngine.SocialPlatforms;
 using TMPro;
 
 public class GPGSManager : MonoBehaviour
@@ -17,21 +14,19 @@ public class GPGSManager : MonoBehaviour
     string AuthenticationFailureMessage;
 
     [SerializeField] Button SignInBtn;
-    [SerializeField] internal TextMeshProUGUI WelcomeUserMessage;
-    [SerializeField] TextMeshProUGUI StatusText;
     public static GPGSManager Instance;
 
     private void Awake()
     {
-        Instance = this;
+        //Instance = this;
     }
 
-    public void Start()
-    {
-        SignInBtn.gameObject.SetActive(false);
-        PlayGamesPlatform.Activate();
-        StartCoroutine(SignInOnStart());
-    }
+    // public void Start()
+    // {
+    //     SignInBtn.gameObject.SetActive(false);
+    //     PlayGamesPlatform.Activate();
+    //     StartCoroutine(SignInOnStart());
+    // }
 
     IEnumerator SignInOnStart()
     {
@@ -61,30 +56,28 @@ public class GPGSManager : MonoBehaviour
 
         IsAuthenticated = isAuthenticated;
         Username = isAuthenticated ? Social.localUser.userName : "Guest";
-        StatusText.text = isAuthenticated ? "Authenticated" : "Not Authenticated: "+ AuthenticationFailureMessage;
         AuthToken = isAuthenticated ? Social.localUser.id : null;
-        WelcomeUserMessage.text = "Welcome, " + Username;
     }
 
     public void SignInOnBtn()
     {
-        if (!IsAuthenticated)
-        {
-            PlayGamesPlatform.Instance.ManuallyAuthenticate(authResult =>
-            {
-                if(authResult == SignInStatus.Success)
-                {
-                    PlayGamesPlatform.Instance.RequestServerSideAccess(true, (code) => SetAuthInfo(true));
-                    Debug.Log("Signed in!");
-                }
-                else
-                {
-                    AuthenticationFailureMessage = authResult.ToString();
-                    SetAuthInfo(false);
-                    Debug.Log(AuthenticationFailureMessage);
-                }
-            });
-        }
+        // if (!IsAuthenticated)
+        // {
+        //     PlayGamesPlatform.Instance.ManuallyAuthenticate(authResult =>
+        //     {
+        //         if(authResult == SignInStatus.Success)
+        //         {
+        //             PlayGamesPlatform.Instance.RequestServerSideAccess(true, (code) => SetAuthInfo(true));
+        //             Debug.Log("Signed in!");
+        //         }
+        //         else
+        //         {
+        //             AuthenticationFailureMessage = authResult.ToString();
+        //             SetAuthInfo(false);
+        //             Debug.Log(AuthenticationFailureMessage);
+        //         }
+        //     });
+        // }
     }
 
 }

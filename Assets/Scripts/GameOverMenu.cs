@@ -46,6 +46,7 @@ public class GameOverMenu : MonoBehaviour {
 			if (value.ToString() == "over")
 			{
 				gameObject.SetActive(true);
+				StartCoroutine(CaptureScreenAndFinishGame());
 			}
 			else
 			{
@@ -56,6 +57,13 @@ public class GameOverMenu : MonoBehaviour {
 		{
 			ApplyCurrentReward();
 		}
+	}
+	
+	IEnumerator CaptureScreenAndFinishGame()
+	{
+		ScreenCapture.CaptureScreenshot("gameover.png");
+
+		yield return 0;
 	}
 
 	void OnDestroy()
@@ -105,6 +113,7 @@ public class GameOverMenu : MonoBehaviour {
 		if (currentScore == bestScore && bestScore != 0)
 		{
 			lblBestScore.text = "NEW BEST " + bestScore;
+			GameManager.Instance.PublishEvent("SetLeaderboard", bestScore);
 //			OnNewBestScore();
 		}
 		else
@@ -114,9 +123,11 @@ public class GameOverMenu : MonoBehaviour {
 //				OnNewBestScore ();
 //			}
 		}
+		// if (GPGSManager.IsAuthenticated)
+		// 	LeaderboardGPGS.PostToLeaderBoard(bestScore);
 
-		if (GPGSManager.IsAuthenticated)
-			Leaderboard.PostToLeaderBoard(bestScore);
+		
+		
 	}
 
 	void InitializeVideoReward()

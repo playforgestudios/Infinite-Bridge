@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 
@@ -27,9 +28,17 @@ public class ShopMenu : MonoBehaviour {
 	}
 
 	// Update is called once per frame
-	void Update () {
+	private void Update()
+	{
+#if UNITY_ANDROID
+		if (Input.GetKey(KeyCode.Escape))
+		{
+			GameManager.Instance.MainMenu();
+			SoundManager.Instance.Click();
+		}
+#endif
 	}
-		
+
 	public void OnUnlock(int id){
 		Debug.Log("Unlock clicked");
 	}

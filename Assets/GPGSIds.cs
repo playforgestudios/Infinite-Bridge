@@ -24,7 +24,7 @@
 
 public static class GPGSIds
 {
-        public const string leaderboard_infinite_bridge = "CgkIu9iLhdESEAIQAw"; // <GPGSID>
+        public const string leaderboard_sky_ball = "CgkIqK_Hl-AfEAIQAQ"; // <GPGSID>
 
 }
 

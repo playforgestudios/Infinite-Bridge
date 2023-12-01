@@ -19,6 +19,7 @@ public class AdsManager : MonoBehaviour
     private InterstitialAd interstitialAd;
     private RewardedAd rewardedAd;
     private RewardedInterstitialAd rewardedInterstitialAd;
+    [SerializeField] private int interstitialAdCountDown = 3;
 
     void Awake()
     {
@@ -27,28 +28,46 @@ public class AdsManager : MonoBehaviour
     
     public void Start()
     {
+        var isFirstLaunch = PlayerPrefs.GetInt("isFirstLaunch", 1);
+        if (isFirstLaunch == 1)
+            return;
+        InitializeAds();
+    }
+
+    void InitializeAds()
+    {
         // Initialize the Google Mobile Ads SDK.
         MobileAds.Initialize((initStatus) =>
         {
-            Dictionary<string, AdapterStatus> map = initStatus.getAdapterStatusMap();
-            foreach (KeyValuePair<string, AdapterStatus> keyValuePair in map)
-            {
-                string className = keyValuePair.Key;
-                AdapterStatus status = keyValuePair.Value;
-                switch (status.InitializationState)
-                {
-                    case AdapterState.NotReady:
-                        // The adapter initialization did not complete.
-                        MonoBehaviour.print("Adapter: " + className + " not ready.");
-                        break;
-                    case AdapterState.Ready:
-                        // The adapter was successfully initialized.
-                        MonoBehaviour.print("Adapter: " + className + " is initialized.");
-                        break;
-                }
-            }
+            ChooseContentRating();
             StartCoroutine(LoadAdsAfterInitialize());
         });
+    }
+
+    void ChooseContentRating()
+    {
+        RequestConfiguration requestConfiguration = MobileAds.GetRequestConfiguration();
+        switch (GameManager.PlayerAge)
+        {
+            case <=13:
+                requestConfiguration.TagForChildDirectedTreatment = TagForChildDirectedTreatment.True;
+                requestConfiguration.MaxAdContentRating = MaxAdContentRating.G;
+                break;
+            case <= 17:
+                requestConfiguration.TagForChildDirectedTreatment = TagForChildDirectedTreatment.True;
+                requestConfiguration.MaxAdContentRating = MaxAdContentRating.T;
+                break;
+            case >= 22:
+                requestConfiguration.TagForChildDirectedTreatment = TagForChildDirectedTreatment.False;
+                requestConfiguration.MaxAdContentRating = MaxAdContentRating.MA;
+                break;
+            default:
+                requestConfiguration.TagForChildDirectedTreatment = TagForChildDirectedTreatment.True;
+                requestConfiguration.MaxAdContentRating = MaxAdContentRating.Unspecified;
+                break;
+        }
+        
+        MobileAds.SetRequestConfiguration(requestConfiguration);
     }
 
     IEnumerator LoadAdsAfterInitialize()
@@ -76,7 +95,7 @@ public class AdsManager : MonoBehaviour
         _bannerView = new BannerView(_adUnitId, AdSize.GetCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(AdSize.FullWidth), AdPosition.Bottom);
     }
 
-    public void LoadBannerAd()
+    private void LoadBannerAd()
     {
         // create an instance of a banner view first.
         if (_bannerView == null)
@@ -92,7 +111,7 @@ public class AdsManager : MonoBehaviour
         _bannerView.LoadAd(adRequest);
     }
 
-    public IEnumerator LoadInterstitialAd()
+    private IEnumerator LoadInterstitialAd()
     {
         string _adUnitId = _interstitialId;
         // Clean up the old ad before loading a new one.
@@ -117,13 +136,9 @@ public class AdsManager : MonoBehaviour
                 if (error != null || ad == null)
                 {
                     done = true;
-                    Debug.LogError("interstitial ad failed to load an ad " +
-                                   "with error : " + error);
                     return;
                 }
                 done = true;
-                Debug.Log("Interstitial ad loaded with response : "
-                          + ad.GetResponseInfo());
 
                 interstitialAd = ad;
             });
@@ -180,8 +195,6 @@ public class AdsManager : MonoBehaviour
         ad.OnAdFullScreenContentFailed += (AdError error) =>
         {
             StartCoroutine(LoadInterstitialAd());
-            Debug.LogError("Interstitial ad failed to open full screen content " +
-                           "with error : " + error);
         };
     }
 
@@ -210,8 +223,6 @@ public class AdsManager : MonoBehaviour
                 // if error is not null, the load request failed.
                 if (error != null || ad == null)
                 {
-                    Debug.LogError("Rewarded ad failed to load an ad " +
-                                   "with error : " + error);
                     return;
                 }
                 done = true;
@@ -247,13 +258,16 @@ public class AdsManager : MonoBehaviour
             StartCoroutine(LoadRewardedAd());
             return;
         }
-        
-        // Raised when the ad closed full screen content.
-        ad.OnAdFullScreenContentClosed += () =>
+        // Raised when the ad is estimated to have earned money.
+        ad.OnAdPaid += (AdValue adValue) =>
         {
             GameManager.Instance.PublishEvent("incentivized_video_completed", "omc");
             StartCoroutine(LoadRewardedAd());
-            Debug.Log("Rewarded ad full screen content closed.");
+        };
+        // Raised when the ad closed full screen content.
+        ad.OnAdFullScreenContentClosed += () =>
+        {
+            
         };
         // Raised when the ad failed to open full screen content.
         ad.OnAdFullScreenContentFailed += (AdError error) =>
@@ -288,8 +302,6 @@ public class AdsManager : MonoBehaviour
                 done = true;
                 if (error != null || ad == null)
                 {
-                    Debug.LogError("rewarded interstitial ad failed to load an ad " +
-                                   "with error : " + error);
                     return;
                 }
                 done = true;
@@ -345,6 +357,19 @@ public class AdsManager : MonoBehaviour
         if (name == "show_incentivized_ad")
         {
             ShowRewardedAd();
+        }
+        else if (name == "Initialize Ads")
+        {
+            InitializeAds();
+        }
+        else if (name == "show_interstitial_ad")
+        {
+            interstitialAdCountDown--;
+            if (interstitialAdCountDown <= 0)
+            {
+                ShowInterAd();
+                interstitialAdCountDown = 3;
+            }
         }
     }
 

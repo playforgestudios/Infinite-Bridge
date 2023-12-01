@@ -68,6 +68,7 @@ public class PlayerCubes : MonoBehaviour
     bool firstTimeOMC;
     LevelComplexity[] levelComplexities = new LevelComplexity[12];
     public int[] tileSwitchArray;
+    private int adContinueChances;
 
     void Awake()
     {
@@ -148,6 +149,8 @@ public class PlayerCubes : MonoBehaviour
 
     void Reset()
     {
+        adContinueChances = GameManager.Instance.continueWithAdChances;
+        
         transform.position = GameManager.Instance.startPosition;
         direction = Direction.FORWARD;
         m_Score = 0;
@@ -568,7 +571,7 @@ public class PlayerCubes : MonoBehaviour
         set => PlayerPrefs.SetInt("GamesSinceBestScore", value);
     }
 
-    int bestScore
+    internal int bestScore
     {
         //BestScore
         get => PlayerPrefs.GetInt("BestScore", 0);
@@ -784,12 +787,20 @@ public class PlayerCubes : MonoBehaviour
         }
     }
 
+    
     void DecideForOneMoreChance()
     {
         StopPlayer();
         //TODO: One more chance
-
-        StartCoroutine(CaptureScreenAndFinishGame());
+        if (adContinueChances > 0)
+        {
+            GameManager.Instance.OnOneMoreChange();
+            adContinueChances--;
+            if (m_Score > bestScore)
+                adContinueChances = 0;
+            return;
+        }
+        //StartCoroutine(CaptureScreenAndFinishGame());
         FinishGame();
         /*
         if (m_Score<bestScore&& !firstTimeOMC){
@@ -807,8 +818,7 @@ public class PlayerCubes : MonoBehaviour
 
     void FinishGame()
     {
-        //GameManager.Instance.FinishGame();
-        GameManager.Instance.OnOneMoreChange();
+        GameManager.Instance.FinishGame();
     }
 
     public void ContinueGame()
@@ -826,10 +836,6 @@ public class PlayerCubes : MonoBehaviour
 
     void StopPlayer()
     {
-        print("//////////////////////////////////////////////////////////////////" +
-              "///////////////////////////////////////////////////////////////////" +
-              "/////////////////////////////////////////////////////////////////" +
-              "//////////////////////////////////////////////////////////");
         if (m_TurnCoroutine != null)
         {
             StopCoroutine(m_TurnCoroutine);

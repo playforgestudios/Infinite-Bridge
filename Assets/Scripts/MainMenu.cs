@@ -62,12 +62,5 @@ public class MainMenu : MonoBehaviour {
 
 	}
 */
-
-	void OnEnable()
-	{
-		if (InAppUpdateManager.isFlexibleUpdateDownloaded)
-		{
-			GameManager.Instance.PublishEvent("start installing update");
-		}
-	}
+	
 }

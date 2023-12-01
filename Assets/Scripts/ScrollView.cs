@@ -150,6 +150,6 @@ public class ScrollView : MonoBehaviour {
 
 	void UpdateTotalCoinText(){
 		int totalCoins = PlayerPrefs.GetInt("TotalCoins",0);
-		m_CoinText.text = string.Format ("{0} COINS LEFT", totalCoins);
+		m_CoinText.text = string.Format ("{0} C", totalCoins);
 	}
 }

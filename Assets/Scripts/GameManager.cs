@@ -3,20 +3,21 @@
 public class GameManager : BBCommon.Singleton<GameManager>
 {
     private const string kAppStoreURL = "";
-    private const string kGooglePlayURL = "";
+    private const string kGooglePlayURL = "https://play.google.com/store/apps/details?id=com.PlayForgeStudios.EndlessRollingBall";
     private const string kAppStoreId = "";
-    private const string kGooglePlayId = "com.PlayForgeStudios.ZigZagRollingBall3D";
+    private const string kGooglePlayId = "com.PlayForgeStudios.EndlessRollingBall";
     private const string kFBAppLink = "";
     private const string kFBPageLink = "https://www.facebook.com/PlayForgeStudios";
     private const string kLeaderboardName = "";
     private static string kShareText = "OMG!! I have scored {0} in {1}. Can you beat my score?";
-
 
     public string m_GameState;
     
     public PlayerCubes player;
     public GameObject selectedPlayer;
     public bool adDebugEnabled;
+    public int continueWithAdChances = 3;
+    
     //Events and delegates
 
 
@@ -33,6 +34,29 @@ public class GameManager : BBCommon.Singleton<GameManager>
     public int maxChancesWithAd = 3;
     internal int remainingChancesWithAd;
     
+    //Player Info
+    private static string m_playerName;
+    private static int m_playerAge;
+
+    internal static string PlayerName
+    {
+        get => m_playerName;
+        set
+        {
+            m_playerName = value;
+            PlayerPrefs.SetString("PlayerName", value);
+        }
+    }
+
+    internal static int PlayerAge
+    {
+        get => m_playerAge;
+        set
+        {
+            m_playerAge = value;
+            PlayerPrefs.SetInt("PlayerAge", value);
+        }
+    }
 
     // Use this for initialization
     void Awake()
@@ -54,6 +78,8 @@ public class GameManager : BBCommon.Singleton<GameManager>
         //	FB.ActivateApp();
         //}
         //Cursor.visible = false;
+        m_playerName = PlayerPrefs.GetString("PlayerName");
+        m_playerAge = PlayerPrefs.GetInt("PlayerAge");
     }
 
     public void PauseGame(bool isGamePaused)
@@ -284,7 +310,7 @@ public class GameManager : BBCommon.Singleton<GameManager>
     public void OnShare()
     {
         NativeShare ns = new NativeShare();
-        string storeUrl = "http://www.burakbayer.com";
+        string storeUrl = "https://play.google.com/store/apps/developer?id=PlayForge+Studios";
 #if UNITY_IOS
 		storeUrl = kAppStoreURL;
 #elif UNITY_ANDROID
